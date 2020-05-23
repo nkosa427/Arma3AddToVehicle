@@ -1,6 +1,10 @@
 _items = [];
+_weapons = [];
+_vestItems = [];
+_uniformItems = [];
 _backpacks = [];
 _backpackType = [];
+fnc_getItems = compile preprocessFile "fn_transferItems.sqf";
 
 _veh = (_this select 0);
 _trg = cursorTarget;
@@ -8,8 +12,11 @@ _trg = cursorTarget;
 if(_trg isKindOf "Man") then {
 
 	/////////////////////////////Weapons and Magazines////////////////////////////////////
-	_items = magazines _trg;
-    _items append weapons _trg;
+	_weapons = magazines _trg;
+    _weapons append weapons _trg;
+	//[_weapons, _veh] execvm "fn_transferItems.sqf";
+	_value = [_weapons, _veh] call fnc_getItems;
+	systemChat str(_value);
 	
 	/////////////////////////////Uniform and Uniform Contents
 	_uniformItems = (getItemCargo(uniformContainer _trg));
@@ -22,7 +29,7 @@ if(_trg isKindOf "Man") then {
 	};
 	
 	_items append [uniform _trg];
-	removeUniform _trg;
+	//removeUniform _trg;
 	
 	////////////////////////////Vest and Vest Contents//////////////////////////////////
 	_vestItems = (getItemCargo(vestContainer _trg));
@@ -35,14 +42,14 @@ if(_trg isKindOf "Man") then {
 	};
 	
 	_items append [vest _trg];	
-	removeVest _trg;
+	//removeVest _trg;
 	
 	////////////////////////////Backpack and Backpack Contents//////////////////////////	
 	_items append (backpackItems _trg);
 	_backpackType append [(backpack _trg)];
 	removeBackpack _trg;
 		
-    removeAllWeapons _trg;
+    //removeAllWeapons _trg;
 	
 }else{
 	_items = magazineCargo _trg;
