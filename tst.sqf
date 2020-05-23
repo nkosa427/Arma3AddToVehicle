@@ -13,7 +13,7 @@ if (lastVehId isEqualTo "none") then{
 	_veh = (lastVehId call BIS_fnc_objectFromNetId);
 	if ( (alive _veh) && ((player distance2d (lastVehId call BIS_fnc_objectFromNetId)) < 31) ) then {
 		//hint str(player distance2d (lastVehId call BIS_fnc_objectFromNetId));
-		[_veh] execvm "fn_transferItems.sqf";
+		[_veh] execvm "fn_getItems.sqf";
 		sleep 3;
 		hintSilent "";
 	}else{
