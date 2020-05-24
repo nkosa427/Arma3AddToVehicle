@@ -1,4 +1,7 @@
+
+fnc_buttonAction = compile preprocessFile "fn_buttonAction.sqf";
 lastVehID = "none";
+
 
 player addEventHandler ["GetInMan", { 
 	_var = (_this select 2);
@@ -9,7 +12,7 @@ player addEventHandler ["GetInMan", {
 
 act_car = player addAction [
 	"Add to vehicle", 
-	"tst.sqf", 
+	fnc_buttonAction, 
 	"",
 	1.5,
 	false,
