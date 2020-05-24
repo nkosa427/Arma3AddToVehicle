@@ -110,24 +110,11 @@ if(_trg isKindOf "Man") then {
 }forEach _backpacks;
 
 //////////////////////////////Adding items on ground to vehicle////////////////////////////////////
-{
-	if (_veh canAdd _x) then {
-		_veh addItemCargoGlobal [_x, 1];
-		_trg removeItem _x;
-		
-		if (isClass (configFile >> "CFGweapons" >> _x)) then {
-			//systemChat str(_x);
-			_trg removeWeapon _x;
-		};
-	} else {
-		_vehFull = 1;
-	};
-	//systemChat str(_x);
-}forEach _items;
 
-if (_vehFull isEqualTo 0) then {
-	clearWeaponCargoGlobal _trg;
-    clearMagazineCargoGlobal _trg;
+_val = [_veh, _items, 3] call fnc_transferGear;
+	
+if (_val > 0) then {
+	_vehFull = 1;
 };
 
 {
