@@ -6,11 +6,19 @@ _backpackItems = [];
 _backpacks = [];
 _backpackType = [];
 _vehFull = 0;
-fnc_transferWeapons = compile preprocessFile "fn_transferWeapons.sqf";
 fnc_transferGear = compile preprocessFile "fn_transferGear.sqf";
 
 _veh = (_this select 0);
 _trg = cursorTarget;
+
+[0.01] spawn{ 
+	_progressPoint = param [0,0,[0]];
+	_text = param [1,"",[""]];
+	_taskFailed = {
+		"SG_CirclePBLayer" cutFadeOut 0.2;
+	};
+};
+disableSerialization;
 
 if(_trg isKindOf "Man") then {
 
@@ -22,8 +30,6 @@ if(_trg isKindOf "Man") then {
 	if (_val > 0) then {
 		_vehFull = 1;
 	};
-	
-	systemChat str(_vehFull);
 	
 /////////////////////////////////Uniform and Uniform Contents/////////////////////////////
 	_uniformArray = (getItemCargo(uniformContainer _trg));
@@ -72,7 +78,16 @@ if(_trg isKindOf "Man") then {
 	};
 
 ///////////////////////////////Headgear and Assigned Items//////////////////////////////////////////////////
-
+	_headgear = headgear _trg;
+	if !(_headgear isEqualTo "") then {
+		if(_veh canAdd _headgear) then {
+			//_veh addItemCargoGlobal [_headgear, 1];
+			_trg unassignItem _headgear;
+		}else{
+			_vehFull = 1;
+		};	
+	};
+	
 	_assignedItems = (assignedItems _trg);
 	_items append _assignedItems;
 	
@@ -80,17 +95,7 @@ if(_trg isKindOf "Man") then {
 		_trg unassignItem _x;
 	}forEach _assignedItems;
 	
-	_headgear = headgear _trg;
-	if !(_headgear isEqualTo "") then {
-		if(_veh canAdd _headgear) then {
-			_veh addItemCargoGlobal [_headgear, 1];
-			removeHeadgear _trg;
-		}else{
-			_vehFull = 1;
-		};	
-	};
-	
-}else{
+}else{											////////////////Ground items
 	_items = magazineCargo _trg;
 	_items append weaponCargo _trg;
 	_backpackType append backpackCargo _trg;
@@ -105,11 +110,6 @@ if(_trg isKindOf "Man") then {
 }forEach _backpacks;
 
 //////////////////////////////Adding items on ground to vehicle////////////////////////////////////
-
-	//clearWeaponCargoGlobal _trg;
-    //clearMagazineCargoGlobal _trg;
-    //clearBackpackCargoGlobal _trg;
-
 {
 	if (_veh canAdd _x) then {
 		_veh addItemCargoGlobal [_x, 1];

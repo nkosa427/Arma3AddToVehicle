@@ -14,7 +14,7 @@ _trg = cursorTarget;
 		_trg removeItem _x;
 		
 		if (isClass (configFile >> "CFGweapons" >> _x)) then {
-			//systemChat str(_x);
+			hint format ["Added %1", str(_x)];
 			_trg removeWeapon _x;
 		};
 		
@@ -24,36 +24,36 @@ _trg = cursorTarget;
 	//systemChat str(_x);
 }forEach _items;
 
-if (_vehFull isEqualTo 0) then {
-	if (_type isEqualTo 0) then {
-		_uniform = (uniform _trg);
-		if (_veh canAdd _uniform) then {
-			_veh addItemCargoGlobal [_uniform, 1];
-			removeUniform _trg;
-		}else{
-			_vehFull = 1;
-		};
-		
+//////////////////////////////Uniforms, vests, and backpacks below/////////////////////////////
+
+if (_type isEqualTo 0) then {
+	_uniform = (uniform _trg);
+	if (_veh canAdd _uniform) then {
+		_veh addItemCargoGlobal [_uniform, 1];
+		removeUniform _trg;
+	}else{
+		_vehFull = 1;
 	};
 	
-	if (_type isEqualTo 1) then {
-		_vest = (vest _trg);
-		if (_veh canAdd _vest) then {
-			_veh addItemCargoGlobal [_vest, 1];
-			removeVest _trg;
-		}else{
-			_vehFull = 1;
-		};
+};
+
+if (_type isEqualTo 1) then {
+	_vest = (vest _trg);
+	if (_veh canAdd _vest) then {
+		_veh addItemCargoGlobal [_vest, 1];
+		removeVest _trg;
+	}else{
+		_vehFull = 1;
 	};
-	
-	if (_type isEqualTo 2) then {
-		_backpack = (backpack _trg);
-		if (_veh canAdd _backpack) then {
-			_veh addItemCargoGlobal [_backpack, 1];
-			removeBackpack _trg;
-		}else{
-			_vehFull = 1;
-		};
+};
+
+if (_type isEqualTo 2) then {
+	_backpack = (backpack _trg);
+	if (_veh canAdd _backpack) then {
+		_veh addItemCargoGlobal [_backpack, 1];
+		removeBackpack _trg;
+	}else{
+		_vehFull = 1;
 	};
 };
 
