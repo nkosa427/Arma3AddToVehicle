@@ -1,4 +1,5 @@
 
+fnc_getItems = compile preprocessFile "fn_getItems.sqf";
 
 //{
 	//systemChat str(itemCargo _x);
@@ -13,7 +14,7 @@ if (lastVehId isEqualTo "none") then{
 	_veh = (lastVehId call BIS_fnc_objectFromNetId);
 	if ( (alive _veh) && ((player distance2d (lastVehId call BIS_fnc_objectFromNetId)) < 31) ) then {
 		//hint str(player distance2d (lastVehId call BIS_fnc_objectFromNetId));
-		[_veh] execvm "fn_getItems.sqf";
+		[_veh] call fnc_getItems;
 		sleep 3;
 		hintSilent "";
 	}else{

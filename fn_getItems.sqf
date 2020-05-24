@@ -1,6 +1,12 @@
 _items = [];
+_weapons = [];
+_vestArray = [];
+_uniformArray = [];
 _backpacks = [];
 _backpackType = [];
+_vehFull = 0;
+fnc_transferWeapons = compile preprocessFile "fn_transferWeapons.sqf";
+fnc_transferGear = compile preprocessFile "fn_transferGear.sqf";
 
 _veh = (_this select 0);
 _trg = cursorTarget;
@@ -8,41 +14,65 @@ _trg = cursorTarget;
 if(_trg isKindOf "Man") then {
 
 	/////////////////////////////Weapons and Magazines////////////////////////////////////
-	_items = magazines _trg;
-    _items append weapons _trg;
+	_weapons = magazines _trg;
+    _weapons append weapons _trg;
+	_val = [_veh, _weapons] call fnc_transferWeapons;
 	
-	/////////////////////////////Uniform and Uniform Contents
-	_uniformItems = (getItemCargo(uniformContainer _trg));
-	_numItems = count (_uniformItems select 0);
+	if (_val > 0) then {
+		_vehFull = 1;
+	};
+	
+	systemChat str(_vehFull);
+	
+/////////////////////////////////Uniform and Uniform Contents/////////////////////////////
+	_uniformArray = (getItemCargo(uniformContainer _trg));
+	_numItems = count (_uniformArray select 0);
+	_uniformItems = [];
 	
 	for "_i" from 0 to _numItems do {
-		for "_j" from 1 to ((_uniformItems select 1) select _i) do{
-			_items append [((_uniformItems select 0) select _i)];
+		for "_j" from 1 to ((_uniformArray select 1) select _i) do{
+			_uniformItems append [((_uniformArray select 0) select _i)];
 		};
 	};
 	
-	_items append [uniform _trg];
-	removeUniform _trg;
-	
-	////////////////////////////Vest and Vest Contents//////////////////////////////////
-	_vestItems = (getItemCargo(vestContainer _trg));
-	_numItems = count (_vestItems select 0);
-	
-	for "_i" from 0 to _numItems do {
-		for "_j" from 1 to ((_vestItems select 1) select _i) do{
-			_items append [((_vestItems select 0) select _i)];
+	if (!((uniform _trg) isEqualTo "")) then {
+		_val = [_veh, _uniformItems, 0] call fnc_transferGear;
+		if (_val > 0) then {
+			_vehFull = 1;
 		};
 	};
 	
-	_items append [vest _trg];	
-	removeVest _trg;
 	
-	////////////////////////////Backpack and Backpack Contents//////////////////////////	
+	//_items append [uniform _trg];
+	//removeUniform _trg;
+	
+/////////////////////////////////Vest and Vest Contents//////////////////////////////////
+	_vestArray = (getItemCargo(vestContainer _trg));
+	_numItems = count (_vestArray select 0);
+	_vestItems = [];
+	
+	for "_i" from 0 to _numItems do {
+		for "_j" from 1 to ((_vestArray select 1) select _i) do{
+			_vestItems append [((_vestArray select 0) select _i)];
+		};
+	};
+	
+	if (!((vest _trg) isEqualTo "")) then {
+		val = [_veh, _vestItems, 1] call fnc_transferGear;
+		if (_val > 0) then {
+			_vehFull = 1;
+		};
+	};
+	
+	//_items append [vest _trg];	
+	//removeVest _trg;
+	
+///////////////////////////////Backpack and Backpack Contents//////////////////////////	
 	_items append (backpackItems _trg);
 	_backpackType append [(backpack _trg)];
-	removeBackpack _trg;
-		
-    removeAllWeapons _trg;
+	
+	//removeBackpack _trg;	
+    //removeAllWeapons _trg;
 	
 }else{
 	_items = magazineCargo _trg;
@@ -66,7 +96,7 @@ if(_trg isKindOf "Man") then {
 //////////////////////////////Adding items to vehicle////////////////////////////////////
 
 _vehFull = 0;
-
+/*
 {
 	if (_veh canAdd _x) then {
 		_veh addItemCargoGlobal [_x, 1];
@@ -87,6 +117,7 @@ _vehFull = 0;
 if (_vehFull isEqualTo 1) then {
 	hint "Vehicle is full";
 };
+*/
 
 //hint format ["Added %1", ];
 
